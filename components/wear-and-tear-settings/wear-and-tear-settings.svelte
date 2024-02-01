@@ -2,18 +2,18 @@
   import { onMount } from 'svelte';
   import { writable, type Readable, derived } from 'svelte/store';
   import type { ComponentContext, ResourceData } from '@ixon-cdk/types';
-  import { WearAndTearService } from 'services/wear-and-tear.service';
-  import type { WearAndTearItem } from 'models/wear-and-tear';
+  import { WearAndTearService } from './services/wear-and-tear.service';
+  import type { WearAndTearItem } from './models/wear-and-tear';
   import {
     getFormInputs,
     mapFormValueToItem,
     mapItemToFormValue,
   } from './utils/form';
-  import { naturalSort } from 'lib/natural-sort';
+  import { naturalSort } from './lib/natural-sort';
   import {
     isTranslationKey,
     trimNamespace,
-  } from 'formatters/translation/translation.utils';
+  } from './formatters/translation/translation.utils';
   import { DateTime } from 'luxon';
 
   export let context: ComponentContext;
