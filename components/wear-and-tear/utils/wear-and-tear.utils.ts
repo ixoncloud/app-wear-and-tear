@@ -1,4 +1,4 @@
-import type { ResourceData } from '@ixon/types';
+import type { ResourceData } from '@ixon-cdk/types';
 import type { WearAndTearItem } from '../models/wear-and-tear';
 
 export function mapAssetAppConfigToItems(
