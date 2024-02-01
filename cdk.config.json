@@ -9,6 +9,14 @@
           "input": "wear-and-tear.svelte"
         }
       }
+    },
+    "wear-and-tear-settings": {
+      "runner": {
+        "build": {
+          "builder": "@ixon-cdk/svelte-builder:browser",
+          "input": "wear-and-tear-settings.svelte"
+        }
+      }
     }
   }
 }
