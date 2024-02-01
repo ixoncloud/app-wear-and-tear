@@ -1,4 +1,4 @@
-import type { ComponentContextRawMetricInput } from '@ixon/types';
+import type { ComponentContextRawMetricInput } from '@ixon-cdk/types';
 
 export interface WearAndTearItem {
   _id: string;
