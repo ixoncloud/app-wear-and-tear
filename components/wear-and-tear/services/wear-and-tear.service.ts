@@ -1,5 +1,5 @@
 import { omit } from 'lodash-es';
-import type { AssetAppConfig, ComponentContext, IxApiResponse, ResourceData, ResourceDataClient } from '@ixon/types';
+import type { AssetAppConfig, ComponentContext, IxApiResponse, ResourceData, ResourceDataClient } from '@ixon-cdk/types';
 import type { WearAndTearItem } from '../models/wear-and-tear';
 import { mapAssetAppConfigToItems } from '../utils/wear-and-tear.utils';
 

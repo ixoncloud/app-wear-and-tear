@@ -14,15 +14,15 @@
     get,
     writable,
   } from 'svelte/store';
-  import { naturalSort } from 'lib/natural-sort';
-  import type { WearAndTearItem } from 'models/wear-and-tear';
-  import { WearAndTearService } from 'services/wear-and-tear.service';
+  import { naturalSort } from './lib/natural-sort';
+  import type { WearAndTearItem } from './models/wear-and-tear';
+  import { WearAndTearService } from './services/wear-and-tear.service';
   import { DateTime } from 'luxon';
   import { mapItemToQuery } from './utils/query';
   import {
     isTranslationKey,
     trimNamespace,
-  } from 'formatters/translation/translation.utils';
+  } from './formatters/translation/translation.utils';
   import { mapMetricsToPreviousAndCurrent } from './utils/metrics';
 
   let asset: ResourceData.Asset | null = null;
