@@ -1,5 +1,14 @@
 {
   "$schema": "./node_modules/@ixon-cdk/core/config/schema.json",
   "prefix": "app",
-  "components": {}
+  "components": {
+    "wear-and-tear": {
+      "runner": {
+        "build": {
+          "builder": "@ixon-cdk/svelte-builder:browser",
+          "input": "wear-and-tear.svelte"
+        }
+      }
+    }
+  }
 }
