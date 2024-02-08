@@ -14,5 +14,5 @@ To get started, download this project as a ZIP, and extract it to your desired l
 
 ```sh
 npm install
-npx cdk simulate service-logbook
+npx cdk simulate wear-and-tear
 ```
