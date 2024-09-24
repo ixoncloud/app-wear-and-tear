@@ -1,14 +1,17 @@
+import type { ResourceData } from '@ixon-cdk/types';
 import type { WearAndTearItem } from '../models/wear-and-tear';
 
-export function mapAssetAppConfigToItems(appConfig?: any): WearAndTearItem[] {
+export function mapAssetAppConfigToItems(
+  appConfig?: Partial<ResourceData.AssetAppConfig<Partial<WearAndTearItem>[], Partial<WearAndTearItem>[]>> | null,
+): WearAndTearItem[] {
   const values = appConfig?.values ?? [];
   const stateValues = appConfig?.stateValues ?? [];
   const items = values.map(
-    (value: any, i: number) =>
+    (value, i) =>
       Object.assign(
         { _appConfigId: appConfig?.publicId },
         value,
-        stateValues.find((val: any) => val._id === value._id) ?? stateValues[i],
+        stateValues.find(val => val._id === value._id) ?? { _id: value._id, resetOn: null },
       ) as WearAndTearItem,
   );
   return items;

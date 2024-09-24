@@ -40,7 +40,7 @@
 
   export let context: ComponentContext;
 
-  onMount(async () => {
+  onMount(() => {
     translations = context.translate(
       [
         'LIMIT_EXPECTED_ON',
@@ -97,7 +97,7 @@
     _cancelQuery?.();
     _cancelQuery = loggingDataClient.query(queries, values => {
       get(items).map((item, i) => {
-        itemQueryMap.set(item._id, [...values[i]].reverse());
+        itemQueryMap.set(item._appConfigId + item._id, [...values[i]].reverse());
       });
       itemQueryMap = new Map(itemQueryMap);
     });
@@ -116,10 +116,8 @@
       return true;
     }
     // Support users are able to reset wear and tear items.
-    if (_myUser?.support) {
-      return true;
-    }
-    return false;
+    return !!_myUser?.support;
+
   }
 
   async function handleMoreActionsButtonClick(
@@ -155,7 +153,7 @@
       await service.resetItem(item._appConfigId, item._id, resetOn).then(() => {
         items.update(_items =>
           _items.map(_item =>
-            _item._id === item._id ? { ..._item, resetOn } : _item,
+            _item._id === item._id  && _item._appConfigId === item._appConfigId ? { ..._item, resetOn } : _item,
           ),
         );
       });
@@ -166,7 +164,7 @@
     item: WearAndTearItem,
     _itemQueryMap: Map<string, LoggingDataMetric[]>,
   ): LoggingDataMetric[] | undefined {
-    return _itemQueryMap.get(item._id);
+    return _itemQueryMap.get(item._appConfigId + item._id);
   }
 
   function _getValue(
@@ -347,7 +345,7 @@
                     >
                   </td>
                   <td class="col">
-                    {#if itemQueryMap.get(item._id)?.length}
+                    {#if itemQueryMap.get(item._appConfigId + item._id)?.length}
                       <span
                         data-testid="wear-and-tear-progress-bar"
                         class="progress {getProgressClass(item, itemQueryMap)}"
