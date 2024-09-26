@@ -20,6 +20,7 @@
 
   let assetAppConfig: ResourceData.AssetAppConfig | null;
   let items = writable<WearAndTearItem[]>([]);
+  let isInstance = false;
   let orderedItems: Readable<WearAndTearItem[]>;
   let service: WearAndTearService;
   let translations: Record<string, string> = {};
@@ -61,7 +62,7 @@
       [
         {
           selector: 'Asset',
-          fields: ['publicId'],
+          fields: ['publicId', 'libraryAsset.publicId'],
         },
         {
           selector: 'AssetAppConfig',
@@ -70,6 +71,7 @@
       ],
       ([assetResult, configResult]) => {
         if (assetResult.data) {
+          isInstance = !!assetResult.data.libraryAsset?.publicId;
           assetAppConfig = configResult.data;
           items.set(service.getItemsForAssetAppConfig(configResult.data));
         }
@@ -199,28 +201,30 @@
                     : '–'}
                 </div>
                 <div class="cell cell__actions">
-                  <button
-                    class="icon-button"
-                    data-testid="wear-and-tear-settings-edit-button"
-                    on:click={() => handleEditItemButtonClick(item)}
-                  >
-                    <svg height="20px" viewBox="0 0 24 24" width="20px"
-                      ><path d="M0 0h24v24H0V0z" fill="none" /><path
-                        d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    class="icon-button"
-                    data-testid="wear-and-tear-settings-remove-button"
-                    on:click={() => handleRemoveItemButtonClick(item)}
-                  >
-                    <svg height="20px" viewBox="0 0 24 24" width="20px"
-                      ><path d="M0 0h24v24H0V0z" fill="none" /><path
-                        d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
-                      />
-                    </svg>
-                  </button>
+                  {#if !isInstance}
+                    <button
+                      class="icon-button"
+                      data-testid="wear-and-tear-settings-edit-button"
+                      on:click={() => handleEditItemButtonClick(item)}
+                    >
+                      <svg height="20px" viewBox="0 0 24 24" width="20px"
+                        ><path d="M0 0h24v24H0V0z" fill="none" /><path
+                          d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      class="icon-button"
+                      data-testid="wear-and-tear-settings-remove-button"
+                      on:click={() => handleRemoveItemButtonClick(item)}
+                    >
+                      <svg height="20px" viewBox="0 0 24 24" width="20px"
+                        ><path d="M0 0h24v24H0V0z" fill="none" /><path
+                          d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"
+                        />
+                      </svg>
+                    </button>
+                  {/if}
                 </div>
               </div>
             </div>
@@ -228,20 +232,22 @@
         {/if}
       </div>
     </div>
-    <button
-      data-testid="wear-and-tear-settings-add-button"
-      class="button fab-button accent"
-      on:click={handleAddItemButtonClick}
-    >
-      <div>
-        <svg height="24" viewBox="0 -960 960 960" width="24"
-          ><path
-            d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z"
-          /></svg
-        >
-        <span>{translations.ADD_ITEM}</span>
-      </div>
-    </button>
+    {#if !isInstance}
+      <button
+        data-testid="wear-and-tear-settings-add-button"
+        class="button fab-button accent"
+        on:click={handleAddItemButtonClick}
+      >
+        <div>
+          <svg height="24" viewBox="0 -960 960 960" width="24"
+            ><path
+              d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z"
+            /></svg
+          >
+          <span>{translations.ADD_ITEM}</span>
+        </div>
+      </button>
+    {/if}
   </div>
 </div>
 
@@ -253,7 +259,7 @@
     $bannerHeight: 57px;
     $captionHeight: 56px;
     $headerRowHeight: 50px;
-    $headerBgColor: #f5f5f5;
+    $headerBgColor: #fff;
     $defaultRowHeight: 40px;
     padding: 16px !important;
 
@@ -267,7 +273,6 @@
       .table {
         display: table;
         min-width: 100%;
-        box-shadow: 0 0px 0 1px var(--card-border-color);
         margin-bottom: calc(
           88px +
             (
@@ -285,7 +290,7 @@
           background-color: var(--body-bg);
 
           &:hover .cell {
-            background-color: $headerBgColor;
+            background-color: #f5f5f5;
           }
 
           .cell {
