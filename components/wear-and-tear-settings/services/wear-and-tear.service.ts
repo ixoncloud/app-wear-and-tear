@@ -10,7 +10,10 @@ export class WearAndTearService {
     this._client = _context.createResourceDataClient();
   }
 
-  addItem(config: any, data: Partial<WearAndTearItem>): Promise<void> {
+  addItem(
+    config: ResourceData.AssetAppConfig<Partial<WearAndTearItem>[], Partial<WearAndTearItem>[]> | null,
+    data: Partial<WearAndTearItem>,
+  ): Promise<void> {
     const _id = crypto.randomUUID() as string;
     const value: Partial<WearAndTearItem> = { _id, ...data };
     const stateValue: Partial<WearAndTearItem> = { _id };
@@ -25,15 +28,22 @@ export class WearAndTearService {
     });
   }
 
-  getItemsForAssetAppConfig(config: any): WearAndTearItem[] {
+  getItemsForAssetAppConfig(
+    config: ResourceData.AssetAppConfig<Partial<WearAndTearItem>[], Partial<WearAndTearItem>[]> | null,
+  ): WearAndTearItem[] {
     return mapAssetAppConfigToItems(config);
   }
 
-  getItemsForAssetAppConfigList(configs: any): WearAndTearItem[] {
-    return configs?.flatMap((config: any) => mapAssetAppConfigToItems(config)) ?? [];
+  getItemsForAssetAppConfigList(
+    configs: ResourceData.AssetAppConfig<Partial<WearAndTearItem>[], Partial<WearAndTearItem>[]>[] | null,
+  ): WearAndTearItem[] {
+    return configs?.flatMap(config => mapAssetAppConfigToItems(config)) ?? [];
   }
 
-  removeItem(config: any, itemId: string): Promise<void> {
+  removeItem(
+    config: ResourceData.AssetAppConfig<Partial<WearAndTearItem>[], Partial<WearAndTearItem>[]>,
+    itemId: string,
+  ): Promise<void> {
     const values = [...(config?.values ?? [])].filter(val => val._id !== itemId);
     const stateValues = [...(config?.values ?? [])].filter(val => val._id !== itemId);
     return this._client.update({ selector: 'AssetAppConfig', data: { values, stateValues } });
@@ -48,11 +58,15 @@ export class WearAndTearService {
       .then(response => {
         if (response.data.stateValues) {
           const stateValues = JSON.parse(response.data.stateValues);
-          stateValues.forEach((stateValue: { _id: string; resetOn: number }) => {
-            if (stateValue._id === itemId) {
-              stateValue.resetOn = resetOn;
-            }
-          });
+          const stateValue = stateValues.find((stateValue: { _id: string }) => stateValue._id === itemId);
+          if (stateValue) {
+            stateValue.resetOn = resetOn;
+          } else {
+            stateValues.push({ _id: itemId, resetOn });
+          }
+          this._updateAssetConfig({ publicId: configId, stateValues: JSON.stringify(stateValues) });
+        } else {
+          const stateValues = [{ _id: itemId, resetOn }];
           this._updateAssetConfig({ publicId: configId, stateValues: JSON.stringify(stateValues) });
         }
       });
